@@ -1,0 +1,22 @@
+{
+  "name": "Word Bank Mastery",
+  "short_name": "Word Bank",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f9f6f0",
+  "theme_color": "#3b2c24",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "wordbank.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "wordbank.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
