@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f9f6f0">
+    <title>Word Bank</title>
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- COLOR PALETTE & VARIABLES --- */
+        :root {
+            --bg-cream: #f9f6f0;
+            --bg-beige: #eae0d5;
+            --text-dark: #3b2c24;
+            --accent-brown: #8b5e34;
+            --card-front: #ffffff;
+            --transition-speed: 0.4s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--accent-brown);
+            color: var(--bg-cream);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+        header h1 {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* --- SECTIONS --- */
+        section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid rgba(139, 94, 52, 0.2);
+        }
+
+        /* --- SECTION 1: ROTATING VOCAB --- */
+        #rotating-vocab {
+            text-align: center;
+            min-height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--bg-cream), var(--bg-beige));
+            border-radius: 20px;
+            margin-top: 2rem;
+            padding: 2rem;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+        }
+        .rotating-word {
+            font-size: 4rem;
+            color: var(--accent-brown);
+            margin-bottom: 1rem;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        .rotating-meaning {
+            font-size: 1.2rem;
+            max-width: 600px;
+            font-style: italic;
+            transition: opacity 0.5s ease;
+        }
+        .fade-out { opacity: 0; }
+
+        /* --- SECTION 2: ADVANCED LIBRARY (FLASHCARDS) --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .flashcard {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px; /* 3D effect */
+            cursor: pointer;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flashcard.is-flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(59, 44, 36, 0.08);
+        }
+        .flashcard-front {
+            background-color: var(--card-front);
+            border: 2px solid var(--bg-beige);
+        }
+        .flashcard-front h3 {
+            font-size: 2rem;
+            color: var(--accent-brown);
+        }
+        .flashcard-front p {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 10px;
+        }
+        .flashcard-back {
+            background-color: var(--accent-brown);
+            color: var(--bg-cream);
+            transform: rotateY(180deg);
+        }
+        .flashcard-back .meaning {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .flashcard-back .example {
+            font-size: 0.95rem;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        /* --- SECTION 3: HOW TO USE --- */
+        #how-to-use {
+            background-color: var(--bg-cream);
+        }
+        .tip-container {
+            max-width: 600px;
+        }
+        .tip-container h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .tip {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            color: #5a4b41;
+        }
+        .next-btn {
+            background-color: var(--text-dark);
+            color: var(--bg-cream);
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* --- SECTION 4: HOLISTIC IDENTITY --- */
+        #holistic {
+            background-color: var(--bg-beige);
+            border-radius: 20px;
+            margin-bottom: 4rem;
+            overflow: hidden;
+        }
+        .quote {
+            text-align: center;
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-bottom: 3rem;
+        }
+        .holistic-card {
+            background: var(--bg-cream);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease-out;
+        }
+        .holistic-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .holistic-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        /* --- CONTRIBUTE BUTTON --- */
+        .contribute-btn {
+            display: block;
+            width: fit-content;
+            margin: 3rem auto 0 auto;
+            background-color: #1a1a1a;
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .contribute-btn:active {
+            transform: scale(0.95);
+        }
+        .contribute-btn del {
+            color: #888;
+        }
+        .contribute-btn strong {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .rotating-word { font-size: 3rem; }
+            section { padding: 3rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="wordbank.png" alt="Word Bank Icon" onerror="this.style.display='none'">
+        <h1>Word Bank</h1>
+    </header>
+
+    <main>
+        <section id="rotating-vocab">
+            <h2 class="rotating-word serif" id="hero-word">Sentient</h2>
+            <p class="rotating-meaning" id="hero-meaning">Able to notice or feel things</p>
+        </section>
+
+        <section id="library">
+            <h2 style="margin-bottom: 1rem; font-size: 2rem;">Advanced Library</h2>
+            <p style="margin-bottom: 2rem;">Tap a card to flip and reveal the meaning.</p>
+            <div class="grid-container" id="flashcard-grid">
+                </div>
+        </section>
+
+        <section id="how-to-use">
+            <div class="tip-container">
+                <h2>Vocabulary Collection</h2>
+                <p class="tip">Tip- Vocab has proportions, 70% understanding and 30% usage.</p>
+                <p class="tip">Tip- Read for 10 minutes daily, the same words for a week and recall once a week from memory.</p>
+                <button class="next-btn" onclick="document.getElementById('holistic').scrollIntoView({behavior: 'smooth'})">Next page.</button>
+            </div>
+        </section>
+
+        <section id="holistic">
+            <div class="quote serif">
+                "You'll be judged no more.<br>Trust The Process. - Anas"
+                <hr style="width: 50px; margin: 20px auto; border-top: 2px solid var(--accent-brown);">
+            </div>
+
+            <div class="holistic-card animate-on-scroll">
+                <h3 class="serif">📚 Holistic Development</h3>
+                <p>Improvement happens across all domains simultaneously. If your sleep breaks, your clarity breaks. We build comprehensive systems, not segregated habits.</p>
+            </div>
+
+            <div class="holistic-card animate-on-scroll">
+                <h3 class="serif">📈 Hormesis</h3>
+                <p>Adaptive stress in the right doses builds capacity. Damaging stress beyond threshold breaks it. Exposure to progressive loads strengthens rather than overwhelms.</p>
+            </div>
+
+            <div class="holistic-card animate-on-scroll">
+                <h3 class="serif">🌱 Aahista Aahista</h3>
+                <p>Systems settle and refine over time. We focus on the smallest first step that provides real data, allowing behavior to solidify into identity.</p>
+            </div>
+
+            <a href="upi://pay?pa=kevinsays@axl&pn=Anas%20Zakir&am=50&cu=INR&tn=Payment%20of%20499" class="contribute-btn">
+                ⚡ Contribute to <del>Anas</del> &nbsp;<strong>Systems</strong>
+            </a>
+        </section>
+    </main>
+
+    <script>
+        // --- DATA BATCH (Extracted from your PDF) ---
+        const vocabData = [
+            {word: "Sentient", meaning: "Able to notice or feel things", example: "Dogs are sentient animals that feel joy and fear."},
+            {word: "Illuminant", meaning: "Something used to create light", example: "The bright sun is a natural illuminant."},
+            {word: "Foresight", meaning: "Planning ahead to prevent problems", example: "She had the foresight to bring an umbrella before it rained."},
+            {word: "Taciturn", meaning: "Quiet or saying very little", example: "The boy was taciturn and rarely spoke in class."},
+            {word: "Consummate", meaning: "To make something perfect or complete", example: "They signed the papers to consummate the deal."},
+            {word: "Brooch", meaning: "A pin on clothes", example: "She wore a silver brooch on her jacket."},
+            {word: "Athwart", meaning: "Lying across", example: "A large log lay athwart the forest path."},
+            {word: "Intercept", meaning: "To stop or catch something before it arrives", example: "The player ran fast to intercept the ball."},
+            {word: "Circumvent", meaning: "To bypass or go around", example: "We took a side road to circumvent the heavy traffic."},
+            {word: "Partible", meaning: "Can be divided", example: "The large cake was partible into twelve slices."},
+            {word: "Belle", meaning: "A beautiful or charming woman", example: "She was known as the belle of the ball."},
+            {word: "Virtuoso", meaning: "Highly skilled in music or art", example: "The young pianist is a true virtuoso."},
+            {word: "Incongruous", meaning: "Not fitting with expectations", example: "A modern TV looks incongruous in a very old castle."},
+            {word: "Indubitably", meaning: "Definitely or without a doubt", example: "It is indubitably the best meal I have ever eaten."},
+            {word: "Piteous", meaning: "Deserving of sympathy or pity", example: "The kitten let out a piteous cry for food."},
+            {word: "Idiosyncratic", meaning: "Unique or peculiar to one person", example: "He has an idiosyncratic way of tying his shoes."},
+            {word: "Pedantic", meaning: "Excessively focused on small rules or details", example: "The teacher was pedantic about using the correct pen colour."},
+            {word: "Avalanche", meaning: "Large mass of snow sliding down a mountain", example: "The loud noise caused a massive avalanche."},
+            {word: "Enthuse", meaning: "To show great excitement", example: "He began to enthuse about his new job."},
+            {word: "Titanic", meaning: "Huge or very powerful", example: "The two teams had a titanic struggle for the trophy."}
+            // You can continue pasting the rest of your list here using the same format.
+        ];
+
+        // --- POPULATE FLASHCARDS ---
+        const grid = document.getElementById('flashcard-grid');
+        vocabData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+            card.innerHTML = `
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <h3 class="serif">${item.word}</h3>
+                        <p>Tap to flip</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="meaning">${item.meaning}</p>
+                        <p class="example">"${item.example}"</p>
+                    </div>
+                </div>
+            `;
+            // Add flip functionality on click (tablet friendly)
+            card.addEventListener('click', () => {
+                card.classList.toggle('is-flipped');
+            });
+            grid.appendChild(card);
+        });
+
+        // --- ROTATING VOCAB LOGIC ---
+        const heroWord = document.getElementById('hero-word');
+        const heroMeaning = document.getElementById('hero-meaning');
+        
+        setInterval(() => {
+            // Fade out
+            heroWord.classList.add('fade-out');
+            heroMeaning.classList.add('fade-out');
+            
+            setTimeout(() => {
+                // Change text
+                const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
+                heroWord.textContent = randomItem.word;
+                heroMeaning.textContent = randomItem.meaning;
+                
+                // Fade back in
+                heroWord.classList.remove('fade-out');
+                heroMeaning.classList.remove('fade-out');
+            }, 500); // Wait for fade out to complete
+        }, 4000); // Rotate every 4 seconds
+
+        // --- SCROLL ANIMATIONS FOR SECTION 4 ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // --- PWA SERVICE WORKER REGISTRATION ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    console.log('Service worker registered.', reg);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
